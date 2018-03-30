@@ -10,8 +10,8 @@ pipeline {
             ]) {
                 script {
                     // Reading configuration file
-                    String configFile =
-                    def config = readFile "conf/bdd.conf"
+                    String configFile = readFile "conf/bdd.conf"
+                    def config = new groovy.json.JsonSlurperClassic().parseText(configFile)
                     // Writing credentials
                     config.user = username
                     config.database = database
