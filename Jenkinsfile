@@ -1,6 +1,6 @@
 pipeline {
 	agent any
-	
+
 	stages {
 		stage('setup') {
 		    withCredentials(bindings: [
@@ -11,7 +11,7 @@ pipeline {
                 script {
                     // Reading configuration file
                     String configFile =
-                    def config =
+                    def config = readFile "conf/bdd.conf"
                     // Writing credentials
                     config.user = username
                     config.database = database
