@@ -1,38 +1,29 @@
 pipeline {
 	agent any
 
-	environment {
-	    username = credentials(paramUsername)
-	    database = credentials(paramDatabase)
-	    password = credentials(paramPassword)
-	}
-
-	String configFile = ''
-	def config = null
-	def json = null
-
 	stages {
 		stage('setup') {
-		    steps {
-		        configFile = readFile "conf/bdd.conf"
-		    }
-		    steps {
-		        config =  new groovy.json.JsonSlurperClassic().parseText(configFile)
-		    }
-		    steps {
-		        config.user = username
-		        config.database = database
-		        config.password = password
-		    }
-		    steps {
-		        json = groovy.json.JsonOutput.toJson(config)
-		    }
-		    steps {
+		    withCredentials(bindings: [
+                string(credentialsId: paramUsername, variable: 'username'),
+                string(credentialsId: paramDatabase, variable: 'database'),
+                string(credentialsId: paramPassword, variable: 'password')
+            ]) {
+                // Reading configuration file
+                String configFile =
+                def config =
+                // Writing credentials
+                config.user = username
+                config.database = database
+                config.password = password
+                def json = groovy.json.JsonOutput.toJson(config)
+                // Write new file
                 writeFile file: "conf/bdd.conf", text: json
-		    }
-		    steps {
-		        archiveArtifacts 'conf/*'
-		    }
+            }
 		}
+	    stage('archive') {
+	        steps {
+	            archiveArtifacts 'conf/*'
+	        }
+	    }
 	}
 }
