@@ -3,7 +3,11 @@ pipeline {
 
 	stages {
 		stage('building') {
-			echo 'builing stuff'
+			steps {
+				step('echo') {
+					sh([script: 'echo "building stuff"'])
+				}
+			}
 		}
 	}
 }
